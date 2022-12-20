@@ -43,8 +43,16 @@ public class MovimientoService {
         CuentaEntity cuenta = cuentaGateway.obtenerCuentaPorId(idCuenta);
         return cuenta.getSaldoInicial();
     }
-    public MovimientoEntity crearMovimiento(MovimientoEntity movimiento){
-        //se necesita Id de la cuenta
+
+    public Double setSaldoEnCuenta(Integer idCuenta, Double valorTransaccion){
+        Double saldoEnCuenta = saldoEnCuenta(idCuenta);
+        Double saldoFinal = saldoEnCuenta + valorTransaccion;
+        CuentaEntity cuenta = cuentaGateway.obtenerCuentaPorId(idCuenta);
+        cuenta.setSaldoInicial(saldoFinal);
+        return saldoFinal;
+    }
+
+    public MovimientoEntity crearRetiro(MovimientoEntity movimiento){
         Double valor = movimiento.getValor();
         Integer idCuenta = movimiento.getCuenta().getCuentaId();
 
@@ -52,10 +60,38 @@ public class MovimientoService {
         if (!fondosSuficiente){
             throw new ObjectNotFoundException( idCuenta, " Movimiento no permitido, fondos insuficientes ");
         }
-        System.out.println(fondosSuficiente);
-        movimiento.setSaldo(saldoEnCuenta(idCuenta)+ movimiento.getValor());
-        //validarSaldo(id, valor);
-        return gateway.crearMovimiento(movimiento);
+        Double valorTransaccion = -valor;
+        movimiento.setValor(valorTransaccion);
+
+        Double saldoEnCuenta = setSaldoEnCuenta(idCuenta,valorTransaccion);
+        movimiento.setSaldo(saldoEnCuenta);
+        MovimientoEntity movimientoRealizado = gateway.crearMovimiento(movimiento);
+
+        //Double saldoEnCuenta = setSaldoEnCuenta(idCuenta, valorTransaccion);
+        return movimientoRealizado;
+    }
+
+    public MovimientoEntity crearConsignacion(MovimientoEntity movimiento){
+        Integer idCuenta = movimiento.getCuenta().getCuentaId();
+        Double valorTransaccion = movimiento.getValor();
+        movimiento.setValor(valorTransaccion);
+
+        Double saldoEnCuenta = setSaldoEnCuenta(idCuenta,valorTransaccion);
+        movimiento.setSaldo(saldoEnCuenta);
+
+        MovimientoEntity movimientoRealizado = gateway.crearMovimiento(movimiento);
+        return movimientoRealizado;
+    }
+    public MovimientoEntity crearMovimiento(MovimientoEntity movimiento){
+        String tipoDeMovimiento = movimiento.getTipoDeMovimiento().toUpperCase();
+        if (tipoDeMovimiento.equals("CONSIGNACION")){
+            return crearConsignacion(movimiento);
+        }
+        if (tipoDeMovimiento.equals("RETIRO")){
+            return crearRetiro(movimiento);
+        }
+        throw new ObjectNotFoundException( tipoDeMovimiento, "transaccion no permitida, Ingrese \"CONSIGNACION\" o \"RETIRO\"");
+
     }
 
     public void eliminarMovimiento(Integer id){
