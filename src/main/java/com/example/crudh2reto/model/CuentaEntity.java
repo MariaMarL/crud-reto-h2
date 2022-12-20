@@ -1,11 +1,14 @@
 package com.example.crudh2reto.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "cuenta")
@@ -28,8 +31,13 @@ public class CuentaEntity {
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "cliente_id")
-    //@JsonBackReference
+    @JsonBackReference
     private ClienteEntity cliente;
 
-    //private Long fkCategoryId;
+    @OneToMany(mappedBy = "cuenta")
+    @JsonManagedReference
+    private List<MovimientoEntity> movimientos = new ArrayList<>();
+    //private MovimientoEntity movimiento
+
+    //private Long fkClienteId;
 }

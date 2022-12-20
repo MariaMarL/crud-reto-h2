@@ -1,6 +1,9 @@
 package com.example.crudh2reto.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -22,4 +25,11 @@ public class MovimientoEntity {
 
     private Double saldo;
 
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "cuenta_id")
+    @JsonBackReference
+    private CuentaEntity cuenta;
+
+    private Long fkCuentaId;
 }

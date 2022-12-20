@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,7 +30,7 @@ public class ClienteEntity extends PersonaEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false)
+    @Column(name ="cliente_id" ,nullable = false)
     private Integer clienteId;
 
     @Column(nullable = false)
@@ -38,8 +39,8 @@ public class ClienteEntity extends PersonaEntity{
     @Column(nullable = false)
     private Boolean estado;
 
-    //@OneToMany(mappedBy = "cliente")
-    //@JsonManagedReference
-    ///private List<CuentaEntity> cuentas;
+    @OneToMany(mappedBy = "cliente")
+    @JsonManagedReference
+    private List<CuentaEntity> cuentas = new ArrayList<>();
 
 }
