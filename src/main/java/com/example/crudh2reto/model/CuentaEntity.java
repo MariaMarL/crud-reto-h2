@@ -1,10 +1,11 @@
 package com.example.crudh2reto.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 
 @Entity
 @Table(name = "cuenta")
@@ -23,4 +24,12 @@ public class CuentaEntity {
     private Double saldoInicial;
 
     private String estadoCuenta;
+
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "cliente_id")
+    //@JsonBackReference
+    private ClienteEntity cliente;
+
+    //private Long fkCategoryId;
 }

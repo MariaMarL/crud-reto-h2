@@ -1,10 +1,12 @@
 package com.example.crudh2reto.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "cliente")
@@ -36,5 +38,8 @@ public class ClienteEntity extends PersonaEntity{
     @Column(nullable = false)
     private Boolean estado;
 
+    //@OneToMany(mappedBy = "cliente")
+    //@JsonManagedReference
+    ///private List<CuentaEntity> cuentas;
 
 }
