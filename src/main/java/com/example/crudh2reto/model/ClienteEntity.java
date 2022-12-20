@@ -7,10 +7,17 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "cliente")
+@Data
 public class ClienteEntity extends PersonaEntity{
 
-    public ClienteEntity(String nombre, String genero, Integer edad, Long identificacion, String direccion, Long telefono, Integer clienteId, String contrasena, Boolean estado) {
+    public ClienteEntity(String nombre, String genero,
+                         Integer edad, Long identificacion,
+                         String direccion, Long telefono,
+                         Integer clienteId, String contrasena,
+                         Boolean estado) {
         super(nombre, genero, edad, identificacion, direccion, telefono);
+        this.clienteId = clienteId;
         this.contrasena = contrasena;
         this.estado = estado;
     }
@@ -30,20 +37,4 @@ public class ClienteEntity extends PersonaEntity{
     private Boolean estado;
 
 
-
-    public String getContrasena() {
-        return contrasena;
-    }
-
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
-    }
-
-    public Boolean getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Boolean estado) {
-        this.estado = estado;
-    }
 }

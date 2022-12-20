@@ -44,7 +44,7 @@ public class ClienteService {
             log.info("Cliente no encontrado");
             throw new ObjectNotFoundException(id, "Cliente");
         }
-        //cliente.setClienteId(id);
+        cliente.setClienteId(id);
         return gateway.actualizarCliente(cliente);
     }
 }

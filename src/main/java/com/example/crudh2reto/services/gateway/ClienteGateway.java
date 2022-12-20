@@ -3,7 +3,6 @@ package com.example.crudh2reto.services.gateway;
 import com.example.crudh2reto.model.ClienteEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ClienteGateway {
 
