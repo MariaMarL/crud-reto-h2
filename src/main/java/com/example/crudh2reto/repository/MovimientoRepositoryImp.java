@@ -27,6 +27,7 @@ public class MovimientoRepositoryImp implements MovimientoGateway {
         return repository.findById(id).get();
     }
 
+
     @Override
     public MovimientoEntity crearMovimiento(MovimientoEntity Movimiento) {
         return repository.save(Movimiento);
