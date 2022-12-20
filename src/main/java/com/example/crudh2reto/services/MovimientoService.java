@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Service
@@ -28,8 +29,8 @@ public class MovimientoService {
         return gateway.obtenerMovimientoPorId(id);
     }
 
-    public Boolean validarSaldo(Integer id, Double valor){
-        CuentaEntity cuenta = cuentaGateway.obtenerCuentaPorId(id);
+    public Boolean validarSaldo(Integer idCuenta, Double valor){
+        CuentaEntity cuenta = cuentaGateway.obtenerCuentaPorId(idCuenta);
         Double saldoCuenta = cuenta.getSaldoInicial();
         if(valor>saldoCuenta){
             log.info("No tiene fondos suficientes");
@@ -38,17 +39,21 @@ public class MovimientoService {
         return true;
     }
 
-    public Double saldoEnCuenta(Integer id){
-        CuentaEntity cuenta = cuentaGateway.obtenerCuentaPorId(id);
+    public Double saldoEnCuenta(Integer idCuenta){
+        CuentaEntity cuenta = cuentaGateway.obtenerCuentaPorId(idCuenta);
         return cuenta.getSaldoInicial();
     }
     public MovimientoEntity crearMovimiento(MovimientoEntity movimiento){
         //se necesita Id de la cuenta
-        //Double valor = movimiento.getValor();
-        //Integer id = movimiento.getMovimientoId();
-        //System.out.println(valor );
-        //System.out.println(id );
-        //movimiento.setSaldo(saldoEnCuenta(id));
+        Double valor = movimiento.getValor();
+        Integer idCuenta = movimiento.getCuenta().getCuentaId();
+
+        Boolean fondosSuficiente = validarSaldo(idCuenta, valor);
+        if (!fondosSuficiente){
+            throw new ObjectNotFoundException( idCuenta, " Movimiento no permitido, fondos insuficientes ");
+        }
+        System.out.println(fondosSuficiente);
+        movimiento.setSaldo(saldoEnCuenta(idCuenta)+ movimiento.getValor());
         //validarSaldo(id, valor);
         return gateway.crearMovimiento(movimiento);
     }
