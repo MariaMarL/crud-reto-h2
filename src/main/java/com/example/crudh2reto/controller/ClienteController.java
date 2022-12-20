@@ -19,16 +19,20 @@ public class ClienteController {
 
     @GetMapping()
     public ResponseEntity<List<ClienteEntity>> listarClientes(){
-        return ResponseEntity.ok(service.listarClientes());
+        List<ClienteEntity> clientes =service.listarClientes();
+        if (clientes.isEmpty()){
+            return new ResponseEntity("No se encontraron clientes creados", HttpStatus.OK);
+        }
+        return new ResponseEntity(clientes, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> obtenerClientePorId(@PathVariable() Integer id){
+    public ResponseEntity<ClienteEntity> obtenerClientePorId(@PathVariable() Integer id){
         try {
             return new ResponseEntity(service.obtenerClientePorId(id), HttpStatus.FOUND);
         }
         catch (Exception exception){
-            return  new ResponseEntity<>("Cliente no encontrado, verifique el Id", HttpStatus.BAD_REQUEST);
+                return  new ResponseEntity("Cliente con id: "+id+ " no encontrado, verifique que el id corresponda a un cliente existente", HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -40,12 +44,12 @@ public class ClienteController {
 
     @PutMapping("/{id}")
     public ResponseEntity<String> actualizarCliente(@PathVariable() Integer id,
-                                                           @RequestBody() ClienteEntity cliente){
+                                                    @RequestBody() ClienteEntity cliente){
         try {
             return new ResponseEntity(service.actualizarCliente(id,cliente),HttpStatus.ACCEPTED);
         }
         catch (Exception exception){
-            return  new ResponseEntity<>("Cliente no encontrado, verifique el Id", HttpStatus.BAD_REQUEST);
+            return  new ResponseEntity<>("Cliente con id: "+id+ " no encontrado, verifique que el id corresponda a un cliente existente", HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -54,10 +58,10 @@ public class ClienteController {
     public ResponseEntity<String> eliminarCliente(@PathVariable() Integer id){
         try {
             service.eliminarCliente(id);
-            return new ResponseEntity<>("Cliente Eliminado",HttpStatus.ACCEPTED);
+            return new ResponseEntity<String>("Cliente Eliminado",HttpStatus.ACCEPTED);
         }
         catch (Exception exception){
-            return  new ResponseEntity<>("Cliente no encontrado, verifique el Id", HttpStatus.BAD_REQUEST);
+            return  new ResponseEntity<String>("Cliente con id: "+id+ " no encontrado, verifique que el id corresponda a un cliente existente", HttpStatus.BAD_REQUEST);
         }
 
     }
