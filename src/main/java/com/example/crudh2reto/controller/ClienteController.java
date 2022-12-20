@@ -39,7 +39,13 @@ public class ClienteController {
 
     @PostMapping()
     public ResponseEntity<ClienteEntity> guardarCliente(@RequestBody() ClienteEntity cliente){
-        return new ResponseEntity(service.guardarCliente(cliente), HttpStatus.CREATED);
+        try {
+            return new ResponseEntity(service.guardarCliente(cliente), HttpStatus.CREATED);
+        }
+        catch (Exception e){
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @PutMapping("/{id}")

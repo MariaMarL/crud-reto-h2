@@ -31,13 +31,19 @@ public class CuentaController {
             return new ResponseEntity(service.obtenerCuentaPorId(id),HttpStatus.FOUND);
         }
         catch (Exception e){
-            return new ResponseEntity("Cuenta con id: "+id+ " no encontrado, verifique que el id corresponda a una cuenta existente", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Cuenta con id: "+id+ " no encontrada, verifique que el id corresponda a una cuenta existente", HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping()
     public ResponseEntity<CuentaEntity> crearCuenta(@RequestBody() CuentaEntity cuenta){
-        return new ResponseEntity(service.crearCuenta(cuenta), HttpStatus.CREATED);
+        try {
+            return new ResponseEntity(service.crearCuenta(cuenta), HttpStatus.CREATED);
+        }
+        catch (Exception e){
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @PutMapping("/{id}")
@@ -47,7 +53,7 @@ public class CuentaController {
             return new ResponseEntity<>(service.actualizarCuenta(id, cuenta), HttpStatus.ACCEPTED);
         }
         catch (Exception e){
-            return new ResponseEntity("Cuenta con id: "+id+ " no encontrado, verifique que el id corresponda a una cuenta existente", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Cuenta con id: "+id+ " no encontrada, verifique que el id corresponda a una cuenta existente", HttpStatus.BAD_REQUEST);
         }
     }
     @DeleteMapping("/{id}")
@@ -57,7 +63,7 @@ public class CuentaController {
             return new ResponseEntity("Cuenta con id: "+id+" eliminada", HttpStatus.ACCEPTED);
         }
         catch (Exception e){
-            return new ResponseEntity("Cuenta con id: "+id+" no encontrado, verifique que el id corresponda a una cuenta existente", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Cuenta con id: "+id+" no encontrada, verifique que el id corresponda a una cuenta existente", HttpStatus.BAD_REQUEST);
         }
     }
 }
