@@ -1,6 +1,7 @@
 package com.example.crudh2reto.services;
 
 import com.example.crudh2reto.model.ClienteEntity;
+import com.example.crudh2reto.model.ReportOnly;
 import com.example.crudh2reto.services.gateway.ClienteGateway;
 //  import com.example.crudh2reto.utils.exceptions.NotFoundException;
 import com.example.crudh2reto.utils.validaciones.Validaciones;
@@ -10,6 +11,7 @@ import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -18,6 +20,13 @@ public class ClienteService {
 
     @Autowired
     private ClienteGateway gateway;
+
+
+    private Validaciones validaciones;
+
+    public ClienteService(Validaciones validaciones) {
+        this.validaciones = validaciones;
+    }
 
     public List<ClienteEntity> listarClientes(){
         return gateway.listarClientes();
@@ -30,7 +39,7 @@ public class ClienteService {
     public Boolean validarCliente(ClienteEntity cliente){
         String genero = cliente.getGenero().toLowerCase();
         String estado = cliente.getEstado().toString();
-        if (!Validaciones.validarGenero(genero)){
+        if (!validaciones.validarGenero(genero)){
             throw new HibernateException("Genero no permitido, Ingrese \"FEMENINO\" o \"MASCULINO\"");
         }
         if (cliente.getEdad()<0 ||
@@ -68,5 +77,9 @@ public class ClienteService {
         }
         cliente.setClienteId(id);
         return gateway.actualizarCliente(cliente);
+    }
+
+    public List<ReportOnly> generarReporte(int clienteid, Date fechainicial, Date fechafinal){
+        return gateway.generarReporte(clienteid, fechainicial, fechafinal);
     }
 }

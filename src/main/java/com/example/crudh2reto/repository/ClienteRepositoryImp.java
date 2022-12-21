@@ -1,12 +1,14 @@
 package com.example.crudh2reto.repository;
 
 import com.example.crudh2reto.model.ClienteEntity;
+import com.example.crudh2reto.model.ReportOnly;
 import com.example.crudh2reto.services.gateway.ClienteGateway;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,4 +49,10 @@ public class ClienteRepositoryImp implements ClienteGateway {
     public ClienteEntity actualizarCliente(ClienteEntity cliente) {
             return repository.save(cliente);
     }
+
+    @Override
+    public List<ReportOnly>  generarReporte(int clienteid, Date fechainicial, Date fechafinal) {
+        return repository.reporte(clienteid, fechainicial, fechafinal);
+    }
+
 }

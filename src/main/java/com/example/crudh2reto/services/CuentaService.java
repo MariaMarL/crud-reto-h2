@@ -18,6 +18,9 @@ public class CuentaService {
     @Autowired
     private CuentaGateway gateway;
 
+    @Autowired
+    private Validaciones validaciones;
+
     public List<CuentaEntity> listarCuentas(){
         return gateway.listarCuentas();
     }
@@ -28,7 +31,7 @@ public class CuentaService {
 
     public Boolean validarCuenta(CuentaEntity cuenta){
         String tipo = cuenta.getTipoDeCuenta().toLowerCase();
-        if(!Validaciones.validarTipoDeCuenta(tipo)){
+        if(!validaciones.validarTipoDeCuenta(tipo)){
             throw new HibernateException("Tipo de cuenta no permitido, Ingrese \"AHORROS\" o \"CORRIENTE\"");
         }
         if(cuenta.getSaldoInicial()<0 ||

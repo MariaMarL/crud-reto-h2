@@ -1,6 +1,7 @@
 package com.example.crudh2reto.controller;
 
 import com.example.crudh2reto.model.ClienteEntity;
+import com.example.crudh2reto.model.ReportOnly;
 import com.example.crudh2reto.services.ClienteService;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -70,6 +74,15 @@ public class ClienteController {
             return  new ResponseEntity<String>("Cliente con id: "+id+ " no encontrado, verifique que el id corresponda a un cliente existente", HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    @GetMapping("/reporte/{clienteid}/{fechainicial}/{fechafinal}")
+    public List<ReportOnly> generarReporte(@PathVariable() int clienteid,
+                                                           @PathVariable() String fechainicial,
+                                                           @PathVariable() String fechafinal ) throws ParseException {
+        Date inicial =new SimpleDateFormat("yyyy/MM/dd").parse(fechainicial); ;
+        Date fechafinal2 =new SimpleDateFormat("yyyy/MM/dd").parse(fechafinal); ;
+        return service.generarReporte(clienteid,inicial, fechafinal2);
     }
 
 }
