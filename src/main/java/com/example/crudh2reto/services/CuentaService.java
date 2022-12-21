@@ -2,6 +2,7 @@ package com.example.crudh2reto.services;
 
 import com.example.crudh2reto.model.CuentaEntity;
 import com.example.crudh2reto.services.gateway.CuentaGateway;
+import com.example.crudh2reto.utils.validaciones.Validaciones;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
@@ -25,20 +26,20 @@ public class CuentaService {
         return gateway.obtenerCuentaPorId(id);
     }
 
-    public Boolean validarTipoDeCuenta(String tipo){
-        if(tipo.equalsIgnoreCase("Ahorros") ||
-                tipo.equalsIgnoreCase("Corriente")){
-            return true;
-        }
-        return false;
-    }
-    public CuentaEntity crearCuenta(CuentaEntity cuenta){
+    public Boolean validarCuenta(CuentaEntity cuenta){
         String tipo = cuenta.getTipoDeCuenta().toLowerCase();
-        if(!validarTipoDeCuenta(tipo)){
+        if(!Validaciones.validarTipoDeCuenta(tipo)){
             throw new HibernateException("Tipo de cuenta no permitido, Ingrese \"AHORROS\" o \"CORRIENTE\"");
         }
-        if(cuenta.getSaldoInicial()<0){
+        if(cuenta.getSaldoInicial()<0 ||
+                cuenta.getNumeroDeCuenta()<0){
             throw new HibernateException("No es posible ingresar valores negativos");
+        }
+        return true;
+    }
+    public CuentaEntity crearCuenta(CuentaEntity cuenta){
+        if (!validarCuenta(cuenta)){
+            throw new HibernateException("No es posible crear la cuenta");
         }
         return gateway.crearCuenta(cuenta);
     }
@@ -56,7 +57,10 @@ public class CuentaService {
         boolean exist = gateway.existCuentaByid(id);
         if (!exist){
             log.info("Cuenta con id "+id+" no encontrada");
-            throw new ObjectNotFoundException(id, " Cuenta ");
+            throw new HibernateException("Cuenta con id "+id+" no encontrada");
+        }
+        if (!validarCuenta(cuenta)){
+            throw new HibernateException("No fue posible actualizar crear el cliente");
         }
         cuenta.setCuentaId(id);
         return gateway.actualizarCuenta(cuenta);

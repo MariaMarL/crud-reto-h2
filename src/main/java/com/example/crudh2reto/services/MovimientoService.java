@@ -5,6 +5,7 @@ import com.example.crudh2reto.model.MovimientoEntity;
 import com.example.crudh2reto.services.gateway.CuentaGateway;
 import com.example.crudh2reto.services.gateway.MovimientoGateway;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,7 +59,7 @@ public class MovimientoService {
 
         Boolean fondosSuficiente = validarSaldo(idCuenta, valor);
         if (!fondosSuficiente){
-            throw new ObjectNotFoundException( idCuenta, " Movimiento no permitido, fondos insuficientes ");
+            throw new HibernateException(" Movimiento no permitido, fondos insuficientes ");
         }
         Double valorTransaccion = -valor;
         movimiento.setValor(valorTransaccion);
@@ -90,7 +91,10 @@ public class MovimientoService {
         if (tipoDeMovimiento.equals("RETIRO")){
             return crearRetiro(movimiento);
         }
-        throw new ObjectNotFoundException( tipoDeMovimiento, "transaccion no permitida, Ingrese \"CONSIGNACION\" o \"RETIRO\"");
+        if (!(movimiento.getValor()>0)){
+            throw new HibernateException("Ingrese un valor mayor a cero");
+        }
+        throw new HibernateException("\"transaccion no permitida, Ingrese \\\"CONSIGNACION\\\" o \\\"RETIRO\\\"\"");
 
     }
 
@@ -107,7 +111,7 @@ public class MovimientoService {
         boolean exist = gateway.existMovimientoByid(id);
         if (!exist){
             log.info("Movimiento con id "+id+" no encontrado");
-            throw new ObjectNotFoundException(id, " Movimiento ");
+            throw new HibernateException("Movimiento con id "+id+" no encontrado");
         }
         movimiento.setMovimientoId(id);
         return gateway.actualizarMovimiento(movimiento);

@@ -3,6 +3,7 @@ package com.example.crudh2reto.services;
 import com.example.crudh2reto.model.ClienteEntity;
 import com.example.crudh2reto.services.gateway.ClienteGateway;
 //  import com.example.crudh2reto.utils.exceptions.NotFoundException;
+import com.example.crudh2reto.utils.validaciones.Validaciones;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
@@ -26,17 +27,10 @@ public class ClienteService {
         return gateway.obtenerClientePorId(id);
     }
 
-    public Boolean validarGenero(String genero){
-        if(genero.equalsIgnoreCase("FEMENINO") ||
-                genero.equalsIgnoreCase("MASCULINO")){
-            return true;
-        }
-        return false;
-    }
-
     public Boolean validarCliente(ClienteEntity cliente){
         String genero = cliente.getGenero().toLowerCase();
-        if (!validarGenero(genero)){
+        String estado = cliente.getEstado().toString();
+        if (!Validaciones.validarGenero(genero)){
             throw new HibernateException("Genero no permitido, Ingrese \"FEMENINO\" o \"MASCULINO\"");
         }
         if (cliente.getEdad()<0 ||

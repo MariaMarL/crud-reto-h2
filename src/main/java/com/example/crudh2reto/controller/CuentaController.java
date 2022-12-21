@@ -52,7 +52,7 @@ public class CuentaController {
             return new ResponseEntity<>(service.actualizarCuenta(id, cuenta), HttpStatus.ACCEPTED);
         }
         catch (Exception e){
-            return new ResponseEntity("Cuenta con id: "+id+ " no encontrada, verifique que el id corresponda a una cuenta existente", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
     @DeleteMapping("/{id}")
