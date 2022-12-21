@@ -6,6 +6,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.sql.Date;
 
 @Entity
 @Table(name = "movimientos")
@@ -17,7 +18,7 @@ public class MovimientoEntity {
     @Column(name = "movimiento_id")
     private Integer movimientoId;
 
-    private String fecha;
+    private Date fecha;
 
     private String tipoDeMovimiento;
 
@@ -31,5 +32,5 @@ public class MovimientoEntity {
     @JsonBackReference
     private CuentaEntity cuenta;
 
-    private Long fkCuentaId;
+    //private Long fkCuentaId;
 }

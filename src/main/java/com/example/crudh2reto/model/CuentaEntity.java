@@ -26,7 +26,7 @@ public class CuentaEntity {
 
     private Double saldoInicial;
 
-    private String estadoCuenta;
+    private Boolean estadoCuenta;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)

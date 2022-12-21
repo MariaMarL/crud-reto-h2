@@ -55,7 +55,7 @@ public class ClienteController {
             return new ResponseEntity(service.actualizarCliente(id,cliente),HttpStatus.ACCEPTED);
         }
         catch (Exception exception){
-            return  new ResponseEntity<>("Cliente con id: "+id+ " no encontrado, verifique que el id corresponda a un cliente existente", HttpStatus.BAD_REQUEST);
+            return  new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
     }
