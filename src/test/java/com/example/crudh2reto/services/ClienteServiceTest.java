@@ -3,27 +3,24 @@ package com.example.crudh2reto.services;
 import com.example.crudh2reto.model.ClienteEntity;
 import com.example.crudh2reto.services.gateway.ClienteGateway;
 import com.example.crudh2reto.utils.validaciones.Validaciones;
+import org.aspectj.lang.annotation.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
 
 class ClienteServiceTest {
 
     @Mock
     private ClienteGateway gateway;
 
-    MockedStatic mockStatic  = mockStatic(Validaciones.class);
-    //private Validaciones validaciones;
-
+    MockedStatic<Validaciones> mockStatic  = mockStatic(Validaciones.class);
 
     @InjectMocks
     private ClienteService service;
@@ -44,6 +41,8 @@ class ClienteServiceTest {
         cliente.setTelefono(3004567890L);
         cliente.setContrasena("4f5b");
         cliente.setEstado(true);
+
+        mockStatic.when(() -> Validaciones.validarGenero("femenino")).thenReturn(true);
     }
 
     @Test
@@ -56,12 +55,37 @@ class ClienteServiceTest {
     @Test
     void obtenerClientePorId() {
         Mockito.when(gateway.obtenerClientePorId(1)).thenReturn(cliente);
-        assertNotNull(service.obtenerClientePorId(1));
+        assertEquals(service.obtenerClientePorId(1), cliente);
     }
 
     @Test
     void validarCliente() {
-        mockStatic.when(() -> Validaciones.validarGenero("femenino")).thenReturn(true);
+        //mockStatic.when(() -> Validaciones.validarGenero("femenino")).thenReturn(true);
         Assertions.assertTrue(service.validarCliente(cliente));
     }
+
+    @Test
+    void guardarCliente() {
+        //mockStatic.when(() -> Validaciones.validarGenero("femenino")).thenReturn(true);
+        Mockito.when(service.validarCliente(cliente)).thenReturn(true);
+        Mockito.when(gateway.guardarCliente(cliente)).thenReturn(cliente);
+        Assertions.assertEquals(cliente ,service.guardarCliente(cliente) );
+    }
+
+    @Test
+    void actualizarCliente() {
+        Mockito.when(gateway.existByid(1)).thenReturn(true);
+        Mockito.when(service.validarCliente(cliente)).thenReturn(true);
+        Mockito.when(gateway.actualizarCliente(cliente)).thenReturn(cliente);
+        Assertions.assertEquals(cliente, service.actualizarCliente(1, cliente));
+    }
+
+
+    //@Test
+    //void eliminarCliente() {
+    //    when(gateway.existByid(1)).thenReturn(true);
+    //    Assertions.assertEquals(service.eliminarCliente(1),void);
+    //}
+
+
 }
