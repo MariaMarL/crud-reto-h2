@@ -1,4 +1,5 @@
-FROM openjdk:11.0.12
-EXPOSE 8080
-ADD target/gama-post-and-comments.jar gama-post-and-comments.jar
-ENTRYPOINT ["java", "-jar", "/gama-post-and-comments.jar"]
+FROM openjdk:11
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} /app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
+EXPOSE 8081
